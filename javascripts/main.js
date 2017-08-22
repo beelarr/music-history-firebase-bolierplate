@@ -9,13 +9,28 @@ let $ = require('jquery'),
 // Using the REST API
 function loadSongsToDOM() {
   console.log("Need to load some songs, Buddy");
+  db.getSongs()
+      .then((songData) => {
+      console.log('got data', songData);
+      let idArray = Object.keys(songData);
+      $.each(idArray, (item, index) =>{
+          songData[index].id = index;
+      });
+      console.log("After idArray", songData);
+      templates.makeSongList(songData);
+      });
 }
 
 loadSongsToDOM(); //<--Move to auth section after adding login btn
 
 // Send newSong data to db then reload DOM with updated song data
 $(document).on("click", ".save_new_btn", function() {
-
+    console.log("save new song button");
+    let songObj = buildSongObj();
+    db.addSong(songObj)
+        .then((songID) =>{
+        loadSongsToDOM();
+        });
 });
 
 // go get the song from database and then populate the form for editing.
