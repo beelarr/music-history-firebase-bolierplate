@@ -19,5 +19,5 @@ firebase.getFBsettings = function(){
 	 return config;
 };
 
-// firebase.initializeApp(config);
+firebase.initializeApp(config);
 module.exports = firebase;

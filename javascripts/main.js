@@ -2,14 +2,15 @@
 
 let $ = require('jquery'),
     db = require("./db-interaction"),
-    templates = require("./dom-builder");
-    // login = require("./user");
+    templates = require("./dom-builder"),
+    user = require("./user");
 
 
 // Using the REST API
 function loadSongsToDOM() {
   console.log("Need to load some songs, Buddy");
-  db.getSongs()
+  let currentUser = user.getUser();
+  db.getSongs(currentUser)
       .then((songData) => {
       console.log('got data', songData);
       let idArray = Object.keys(songData);
@@ -21,7 +22,7 @@ function loadSongsToDOM() {
       });
 }
 
-loadSongsToDOM(); //<--Move to auth section after adding login btn
+// loadSongsToDOM(); //<--Move to auth section after adding login btn
 
 // Send newSong data to db then reload DOM with updated song data
 $(document).on("click", ".save_new_btn", function() {
@@ -80,7 +81,8 @@ function buildSongObj() {
     title: $("#form--title").val(),
     artist: $("#form--artist").val(),
     album: $("#form--album").val(),
-    year: $("#form--year").val()
+    year: $("#form--year").val(),
+    uid: user.getUser()
   };
   return songObj;
 }
@@ -97,10 +99,20 @@ $("#add-song").click(function() {
 
 $("#auth-btn").click(function(){
   console.log("clicked on Signin");
+  user.logInGoogle()
+      .then((result) => {
+      console.log("result from login", result.user.uid);
+      user.setUser(result.user.uid);
+      $("auth-btn").addClass("is-hidden");
+      $("#logout").removeClass("is-hidden");
+      loadSongsToDOM();
+      });
 
 });
 
 $("#logout").click(function(){
   console.log("logout clicked");
+  user.logOut();
+
 
 });

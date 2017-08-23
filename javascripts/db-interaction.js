@@ -11,8 +11,9 @@ let $ = require('jquery'),
 
 function getSongs(user) {
   return new Promise((resolve, reject)=>{
+      console.log("url", `${firebase.getFBsettings().databaseURL}/songs.json?orderBy="uid"&equalTo="${user}"`);
     $.ajax({
-      url: `${firebase.getFBsettings().databaseURL}/songs.json`
+      url: `${firebase.getFBsettings().databaseURL}/songs.json?orderBy="uid"&equalTo="${user}"`
   }).done((songData) => {
       resolve(songData);
   });
@@ -27,7 +28,7 @@ function addSong(songFormObj) {
         url: `${firebase.getFBsettings().databaseURL}/songs.json`,
         type: 'POST',
         data: JSON.stringify(songFormObj),
-        // dataType: 'json'
+        dataType: 'json'
     }). done ((songID) => {
       resolve(songID);
     });
