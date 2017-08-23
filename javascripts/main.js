@@ -35,16 +35,40 @@ $(document).on("click", ".save_new_btn", function() {
 
 // go get the song from database and then populate the form for editing.
 $(document).on("click", ".edit-btn", function () {
+    console.log('edit button');
+    let songID = $(this).data("edit-id");
+    db.getSong(songID)
+        .then((song) => {
+        return templates.songForm(song, songID);
+        })
+        .then((finishedForm) => {
+            $(".uiContainer--wrapper").html(finishedForm);
+        });
 
 });
 
 //Save edited song to FB then reload DOM with updated song data
 $(document).on("click", ".save_edit_btn", function() {
+    let songObj = buildSongObj(),
+        songID = $(this).attr("id");
+    console.log("songID", songID);
 
+    db.editSong(songObj, songID)
+        .then(() => {
+        loadSongsToDOM();
+        });
 });
 
 // Remove song then reload the DOM w/out new song
 $(document).on("click", ".delete-btn", function () {
+    $(document).on('click', ".delete-btn", function () {
+        console.log($(this).data("delete-id"));
+        let songID = $(this).data("delete-id");
+    db.deleteSong(songID)
+        .then(() => {
+            loadSongsToDOM();
+        });
+    });
 
 });
 

@@ -37,17 +37,41 @@ function addSong(songFormObj) {
 // POST - Submits data to be processed to a specified resource. Takes one parameter.
 
 function deleteSong(songId) {
+  return new Promise((resolve, reject) => {
+    $.ajax({
+        url: `${firebase.getFBsettings().databaseURL}/songs/${songId}.json`,
+        method: "DELETE"
+    }).done(()=> {
+        resolve();
+    });
+  });
 
 }
 
 function getSong(songId) {
-
+  return new Promise((resolve, reject) => {
+    $.ajax({
+        url: `${firebase.getFBsettings().databaseURL}/songs/${songId}.json`
+    }).done((songData) =>{
+        resolve(songData);
+    }).fail((error) => {
+          reject(error);
+        });
+  });
 }
 
 // GET - Requests/read data from a specified resource
 // PUT - Update data to a specified resource. Takes two parameters.
 function editSong(songFormObj, songId) {
-
+  return new Promise ((resolve, reject) => {
+    $.ajax({
+        url: `${firebase.getFBsettings().databaseURL}/songs/${songId}.json`,
+        type: "PUT",
+        data: JSON.stringify(songFormObj)
+    }).done((data) => {
+        resolve(data);
+        });
+  });
 }
 
 module.exports = {
